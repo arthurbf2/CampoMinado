@@ -5,11 +5,14 @@ import java.util.Random;
 public abstract class Mapa {
     private Celula[][] campo;
     private int bombas;
+    private int celulasVisiveis;
+    private boolean fimDeJogo;
+    private boolean ganhouJogo;
+
 
     public Mapa(int bombas, int tamanho) {
         this.campo = new Celula[tamanho][tamanho];
         this.bombas = bombas;
-
     }
 
     private void distribuirBombas(int bombas) {
@@ -23,4 +26,6 @@ public abstract class Mapa {
             }
         }
     }
+
+
 }
