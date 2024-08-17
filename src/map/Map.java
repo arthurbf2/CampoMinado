@@ -30,7 +30,7 @@ public abstract class Map {
 
     private void distributeBombs(int bombs) {
         Random random = new Random();
-        for (int i = 0; i < field.length; i++) {
+        for (int i = 0; i < bombs; i++) {
             int x = random.nextInt(field.length);
             int y = random.nextInt(field.length);
             Cell cell = getCell(x, y);
@@ -44,7 +44,7 @@ public abstract class Map {
     public void printGame(){
         for (int i = 0; i < field.length; i++){
             for (int j = 0; j < field.length; j++){
-                if (field[i][j].isBomb())
+                if (getCell(i, j).isBomb())
                     System.out.print(" X");
                 else {
                     int n = getCell(i, j).getNeighboringBombsCount();
