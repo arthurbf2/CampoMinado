@@ -3,13 +3,13 @@ package game;
 import map.*;
 
 
-public class Minefield {
+public class Minesweeper {
 
     private Player player;
     private Map gameMap;
     private Difficulty difficulty;
 
-    public Minefield(Difficulty difficulty) {
+    public Minesweeper(Difficulty difficulty) {
         this.player = new Player("Player 1");
         this.difficulty = difficulty;
         switch (difficulty){
