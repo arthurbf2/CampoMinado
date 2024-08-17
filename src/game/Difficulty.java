@@ -5,11 +5,11 @@ public enum Difficulty {
     EASY(9), MEDIUM(16), HARD(32);
     private final int value;
 
-    private Difficulty(int value) {
+    Difficulty(int value) {
         this.value = value;
     }
 
-    public int getvalue() {
+    public int getValue() {
         return value;
     }
 }

@@ -1,4 +1,5 @@
 package map;
+import game.Difficulty;
 
 public class EasyMap extends Map {
     public final static Difficulty SIZE = Difficulty.EASY;

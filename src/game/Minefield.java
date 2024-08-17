@@ -1,18 +1,33 @@
 package game;
 
-import map.Map;
+import map.*;
+
 
 public class Minefield {
 
     private Player player;
-    private Map map;
+    private Map gameMap;
     private Difficulty difficulty;
 
-    public CampoMinado(Player player, Map map, Difficulty difficulty) {
-        this.player = player;
-        this.map = map;
+    public Minefield(Difficulty difficulty) {
+        this.player = new Player("Player 1");
         this.difficulty = difficulty;
+        switch (difficulty){
+            case EASY:
+                this.gameMap = new EasyMap();
+                break;
+            case MEDIUM:
+                this.gameMap = new MediumMap();
+                break;
+            case HARD:
+                this.gameMap = new HardMap();
+                break;
+        }
+        System.out.println("Welcome");
+        gameMap.printGame();
+
     }
+
 
     public Player getPlayer() {
         return player;
@@ -31,10 +46,10 @@ public class Minefield {
     }
 
     public Map getMap() {
-        return map;
+        return gameMap;
     }
 
     public void setMap(Map map) {
-        this.map = map;
+        this.gameMap = map;
     }
 }
