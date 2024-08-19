@@ -1,5 +1,7 @@
 package map;
 import game.Difficulty;
+
+import java.util.List;
 import java.util.Random;
 
 public abstract class Map {
@@ -41,14 +43,22 @@ public abstract class Map {
         }
     }
 
-    public void printGame(){
+    public void printGame(boolean debug){
         for (int i = 0; i < field.length; i++){
             for (int j = 0; j < field.length; j++){
-                if (getCell(i, j).isBomb())
-                    System.out.print(" X");
+                Cell cell = getCell(i, j);
+                if (debug) {
+                    if (cell.isBomb())
+                        System.out.print(" X");
+                    else {
+                        System.out.print(" " + cell.getNeighboringBombsCount());
+                    }
+                }
                 else {
-                    int n = getCell(i, j).getNeighboringBombsCount();
-                    System.out.print(" " + n);
+                    if (cell.isVisible())
+                        System.out.print(" " + cell.getNeighboringBombsCount());
+                    else
+                        System.out.print(" *");
                 }
             }
             System.out.println();
@@ -57,6 +67,10 @@ public abstract class Map {
 
     public Cell getCell(int row, int column) {
         return field[row][column];
+    }
+
+    public Cell[][] getField() {
+        return field;
     }
 
     public int getFlagCount() { return flagCount; }
@@ -73,29 +87,14 @@ public abstract class Map {
         this.visibleCells = visibleCells;
     }
 
-    public int getBombs() {
-        return bombs;
-    }
-
-    public void setBombs(int bombs) {
-        this.bombs = bombs;
-    }
-
     public boolean isGameWon() {
         return gameWon;
-    }
-
-    public void setGameWon(boolean gameWon) {
-        this.gameWon = gameWon;
     }
 
     public boolean isEndOfGame() {
         return endOfGame;
     }
 
-    public void setEndOfGame(boolean endOfGame) {
-        this.endOfGame = endOfGame;
-    }
 
     public void countBombs(){
         /*
@@ -121,7 +120,47 @@ public abstract class Map {
         }
     }
 
-    public void traverseNeighbors(Cell[][] field){
+    public void traverseNeighbors(Cell[][] field) {
+        for (int i = 0; i < field.length; i++) {
+            for (int j = 0; j < field.length; j++) {
+                Cell cell = getCell(i, j);
+                if (!cell.isVisible() && !cell.isBomb()) {
+                    cell.searchNeighbors(field, cell);
+                }
+            }
+        }
+    }
 
+    public void revealSpaces(Cell cell) {
+        /*
+        method called when an empty position is selected. Reveals all empty neighboring positions,
+        stops when arrives to a non-empty position(position with at least one neighboring bomb)
+         */
+        List<Cell> neighbors = cell.getNeighbors();
+        for (Cell neighbor : neighbors) {
+            neighbor.setVisible(true);
+            visibleCells++;
+            if (neighbor.isEmptyCell() && !neighbor.isVisible()) {
+                revealSpaces(neighbor);
+            }
+        }
+    }
+
+    public boolean checkWinCondition(){
+        return (visibleCells >= (field.length * field.length) - bombs);
+    }
+
+    public void selectPosition(int row, int column) {
+        Cell cell = getCell(row, column);
+        cell.setVisible(true);
+        if (cell.isBomb()) {
+            endOfGame = true;
+            return;
+        }
+        if (cell.isEmptyCell()) {
+            revealSpaces(cell);
+        }
+        printGame(false);
+        endOfGame = checkWinCondition();
     }
 }

@@ -71,11 +71,22 @@ public class Cell {
         this.neighbors = neighbors;
     }
 
-    public void searchNeighbors(Cell[][] field){
-
+    public void searchNeighbors(Cell[][] field, Cell cell) {
+        // Creates a list for every cell containing all its neighboring cells
+        int i = Math.max(this.row - 1, 0);
+        while (i <= this.row + 1 && i < field.length) {
+            int j = Math.max(this.column - 1, 0);
+            while (j <= this.column + 1 && j < field.length) {
+                if (field[i][j] != cell) {
+                    cell.neighbors.add(field[i][j]);
+                }
+                j++;
+            }
+            i++;
+        }
     }
 
     public boolean isEmptyCell() {
-        return true;
+        return this.neighboringBombsCount == 0;
     }
 }

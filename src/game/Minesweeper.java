@@ -2,6 +2,8 @@ package game;
 
 import map.*;
 
+import java.util.Scanner;
+
 
 public class Minesweeper {
 
@@ -23,9 +25,22 @@ public class Minesweeper {
                 this.gameMap = new HardMap();
                 break;
         }
-        System.out.println("Welcome");
-        gameMap.printGame();
-
+        //System.out.println("Welcome");
+        gameMap.printGame(false);
+        do {
+            Scanner scan = new Scanner(System.in);
+            int i;
+            int j;
+            do {
+                System.out.println("Select the row: ");
+                i = scan.nextInt();
+                System.out.println("Select the column ");
+                j = scan.nextInt();
+            } while (i > 0 && i < gameMap.getField().length && j > 0 && j < gameMap.getField().length);
+            gameMap.selectPosition(i, j);
+        } while (!gameMap.isEndOfGame());
+        System.out.println("GAME OVER!");
+        gameMap.printGame(true);
     }
 
 
