@@ -27,19 +27,25 @@ public class Minesweeper {
         }
         //System.out.println("Welcome");
         gameMap.printGame(false);
+        startGame();
+    }
+
+    public void startGame() {
         do {
             Scanner scan = new Scanner(System.in);
-            int i;
-            int j;
-            do {
-                System.out.println("Select the row: ");
-                i = scan.nextInt();
-                System.out.println("Select the column ");
-                j = scan.nextInt();
-            } while (i < 0 || i >= gameMap.getField().length || j < 0 || j > gameMap.getField().length);
-            gameMap.selectPosition(i, j);
-        } while (!gameMap.isEndOfGame());
+            int i, j;
+            System.out.println("Informe a linha: ");
+            i = scan.nextInt();
+            System.out.println("Informe a coluna: ");
+            j = scan.nextInt();
+            if (i >= 0 && i < gameMap.getField().length && j >= 0 && j < gameMap.getField().length) {
+                gameMap.selectPosition(i, j);
+            } else
+                startGame();
+        } while (!gameMap.isEndOfGame() && !gameMap.isGameWon());
         System.out.println("GAME OVER!");
+        if (gameMap.isGameWon())
+            System.out.println("YOU WON!!!!!");
         gameMap.printGame(true);
     }
 

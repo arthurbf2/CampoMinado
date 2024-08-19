@@ -154,12 +154,14 @@ public abstract class Map {
     }
 
     public boolean checkWinCondition(){
+        System.out.println("Visible cells = " + visibleCells);
         return (visibleCells >= (field.length * field.length) - bombs);
     }
 
     public void selectPosition(int row, int column) {
         Cell cell = getCell(row, column);
         cell.setVisible(true);
+        visibleCells++;
         if (cell.isBomb()) {
             endOfGame = true;
             return;
