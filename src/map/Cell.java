@@ -67,9 +67,6 @@ public class Cell {
         return neighbors;
     }
 
-    public void setNeighbors(List<Cell> neighbors) {
-        this.neighbors = neighbors;
-    }
 
     public void searchNeighbors(Cell[][] field, Cell cell) {
         // Creates a list for every cell containing all its neighboring cells

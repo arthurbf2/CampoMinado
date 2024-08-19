@@ -18,8 +18,8 @@ public abstract class Map {
         this.bombs = bombs;
         initializeCells();
         distributeBombs(bombs);
-        countBombs();
         traverseNeighbors(field);
+        countBombs(field);
     }
 
     private void initializeCells() {
@@ -44,26 +44,26 @@ public abstract class Map {
     }
 
     public void printGame(boolean debug){
-        System.out.print(" ");
+        System.out.print("   ");
         for (int x = 0; x < field.length; x++ )
-            System.out.print(" " + x);
+            System.out.printf(" %02d", x);
         System.out.println();
         for (int i = 0; i < field.length; i++){
-            System.out.print(i);
+            System.out.printf(" %02d", i);
             for (int j = 0; j < field.length; j++){
                 Cell cell = getCell(i, j);
                 if (debug) {
                     if (cell.isBomb())
-                        System.out.print(" X");
+                        System.out.print("  X");
                     else {
-                        System.out.print(" " + cell.getNeighboringBombsCount());
+                        System.out.print("  " + cell.getNeighboringBombsCount());
                     }
                 }
                 else {
                     if (cell.isVisible())
-                        System.out.print(" " + cell.getNeighboringBombsCount());
+                        System.out.print("  " + cell.getNeighboringBombsCount());
                     else
-                        System.out.print(" *");
+                        System.out.print("  *");
                 }
             }
             System.out.println();
@@ -101,10 +101,21 @@ public abstract class Map {
     }
 
 
-    public void countBombs(){
+    public void countBombs(Cell[][] field){
         /*
         Calculates the number of bombs in the vicinity of a cell
          */
+        for (Cell[] row : field) {
+            for (Cell cell: row) {
+                List<Cell> neighbors = cell.getNeighbors();
+                for (Cell neighbor : neighbors) {
+                    if (neighbor.isBomb())
+                        cell.setNeighboringBombsCount(cell.getNeighboringBombsCount() + 1);
+                }
+            }
+        }
+
+        /*
         int boundary = field.length;
         for (int i = 0; i < boundary; i++) {
             for (int j = 0; j < boundary; j++) {
@@ -123,6 +134,7 @@ public abstract class Map {
                 }
             }
         }
+        */
     }
 
     public void traverseNeighbors(Cell[][] field) {
@@ -136,25 +148,24 @@ public abstract class Map {
         }
     }
 
-    public void revealSpaces(Cell cell) {
+    public void revealBlankCells(Cell cell) {
         /*
         method called when an empty position is selected. Reveals all empty neighboring positions,
         stops upon arrival to a non-empty position(position with at least one neighboring bomb)
          */
         List<Cell> neighbors = cell.getNeighbors();
         for (Cell neighbor : neighbors) {
-            if (neighbor.isVisible())
-                continue;
-            neighbor.setVisible(true);
-            visibleCells++;
-            if (neighbor.isEmptyCell()) {
-                revealSpaces(neighbor);
+            if (!neighbor.isVisible()) {
+                neighbor.setVisible(true);
+                visibleCells++;
+                if (neighbor.isEmptyCell()) {
+                    revealBlankCells(neighbor);
+                }
             }
         }
     }
 
     public boolean checkWinCondition(){
-        System.out.println("Visible cells = " + visibleCells);
         return (visibleCells >= (field.length * field.length) - bombs);
     }
 
@@ -167,7 +178,7 @@ public abstract class Map {
             return;
         }
         if (cell.isEmptyCell()) {
-            revealSpaces(cell);
+            revealBlankCells(cell);
         }
         printGame(false);
         endOfGame = checkWinCondition();
