@@ -36,7 +36,7 @@ public class Minesweeper {
                 i = scan.nextInt();
                 System.out.println("Select the column ");
                 j = scan.nextInt();
-            } while (i > 0 && i < gameMap.getField().length && j > 0 && j < gameMap.getField().length);
+            } while (i < 0 || i >= gameMap.getField().length || j < 0 || j > gameMap.getField().length);
             gameMap.selectPosition(i, j);
         } while (!gameMap.isEndOfGame());
         System.out.println("GAME OVER!");

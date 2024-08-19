@@ -6,7 +6,7 @@ import java.util.Random;
 
 public abstract class Map {
     private Cell[][] field;
-    private int bombs;
+    private final int bombs;
     private int visibleCells;
     private boolean endOfGame;
     private boolean gameWon;
@@ -44,7 +44,12 @@ public abstract class Map {
     }
 
     public void printGame(boolean debug){
+        System.out.print(" ");
+        for (int x = 0; x < field.length; x++ )
+            System.out.print(" " + x);
+        System.out.println();
         for (int i = 0; i < field.length; i++){
+            System.out.print(i);
             for (int j = 0; j < field.length; j++){
                 Cell cell = getCell(i, j);
                 if (debug) {
@@ -134,13 +139,15 @@ public abstract class Map {
     public void revealSpaces(Cell cell) {
         /*
         method called when an empty position is selected. Reveals all empty neighboring positions,
-        stops when arrives to a non-empty position(position with at least one neighboring bomb)
+        stops upon arrival to a non-empty position(position with at least one neighboring bomb)
          */
         List<Cell> neighbors = cell.getNeighbors();
         for (Cell neighbor : neighbors) {
+            if (neighbor.isVisible())
+                continue;
             neighbor.setVisible(true);
             visibleCells++;
-            if (neighbor.isEmptyCell() && !neighbor.isVisible()) {
+            if (neighbor.isEmptyCell()) {
                 revealSpaces(neighbor);
             }
         }
