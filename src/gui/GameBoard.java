@@ -45,7 +45,6 @@ public class GameBoard extends JFrame {
             JOptionPane.showMessageDialog(null,
                     "YOU WON!");
         } else {
-            printBombs();
             JOptionPane.showMessageDialog(null,
                     "YOU LOST!");
         }
@@ -55,27 +54,23 @@ public class GameBoard extends JFrame {
         menu.setVisible(true);
     }
 
-    public void printBombs(){
-        for(int i = 0; i < this.minesweeper.getDifficulty().getValue(); i++){
-            for(int j = 0; j < this.minesweeper.getDifficulty().getValue(); j++){
-                Cell cell = this.minesweeper.getMap().getCell(i, j);
-                if (cell.isBomb())
-                    buttons[i][j].setText("X");
-            }
-        }
-    }
 
-    public void printButtons(){
+    public void printButtons(boolean isEndOfGame){
         for (int i = 0; i < this.minesweeper.getDifficulty().getValue(); i++){
             for (int j = 0; j < this.minesweeper.getDifficulty().getValue(); j++){
                 Cell cell = this.minesweeper.getMap().getCell(i, j);
-                if (cell.isVisible()){
-                    buttons[i][j].setEnabled(false);
-                    if (cell.isEmptyCell())
-                        buttons[i][j].setText("0");
-                    else
-                        buttons[i][j].setText(Integer.toString(cell.getNeighboringBombsCount()));
+                if (isEndOfGame && cell.isBomb()) {
+                        buttons[i][j].setText("X");
                 }
+                else {
+                        if (cell.isVisible()) {
+                            buttons[i][j].setEnabled(false);
+                            if (cell.isEmptyCell())
+                                buttons[i][j].setText("");
+                            else
+                                buttons[i][j].setText(Integer.toString(cell.getNeighboringBombsCount()));
+                        }
+                    }
             }
         }
     }
@@ -93,10 +88,9 @@ public class GameBoard extends JFrame {
         public void actionPerformed(ActionEvent e) {
             JButton button = buttons[row][col];
             minesweeper.getMap().selectPosition(row, col);
-            printButtons();
-            if (minesweeper.getMap().isEndOfGame()) {
+            printButtons(minesweeper.getMap().isEndOfGame());
+            if (minesweeper.getMap().isEndOfGame())
                 gameOver();
-            }
         }
     }
 }
