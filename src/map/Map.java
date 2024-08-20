@@ -15,8 +15,8 @@ public abstract class Map {
         this.field = new Cell[size][size];
         this.bombs = bombs;
         initializeCells();
-        distributeBombs(bombs);
         traverseNeighbors(field);
+        distributeBombs(bombs);
         countBombs(field);
     }
 

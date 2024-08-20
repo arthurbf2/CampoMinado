@@ -1,34 +1,30 @@
 package gui;
 import game.Difficulty;
 import game.Minesweeper;
-
+import map.Cell;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GameBoard {
-    private JFrame frame;
+public class GameBoard extends JFrame {
     private JPanel gamePanel;
     private JButton[][] buttons;
     private JLabel statusLabel;
     protected Minesweeper minesweeper;
-    //private int rows = 9;
-    //private int columns = 9;
 
     public GameBoard(Difficulty difficulty) {
         this.minesweeper = new Minesweeper(difficulty);
-        frame = new JFrame("Minesweeper");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-        frame.setSize(500, 500);
+        setTitle("MINESWEEPER");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        setSize(500, 500);
 
         gamePanel = new JPanel();
-        int rows = this.minesweeper.getDifficulty().getValue();
-        int columns = this.minesweeper.getDifficulty().getValue();
+        int rows = difficulty.getValue();
+        int columns = difficulty.getValue();
 
         gamePanel.setLayout(new GridLayout(rows, columns));
-
         buttons = new JButton[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -40,18 +36,53 @@ public class GameBoard {
                 gamePanel.add(button);
             }
         }
+        add(gamePanel, BorderLayout.CENTER);
+        setVisible(true);
+    }
 
-        frame.add(gamePanel, BorderLayout.CENTER);
+    public void gameOver(){
+        if (this.minesweeper.getMap().isGameWon()){
+            JOptionPane.showMessageDialog(null,
+                    "YOU WON!");
+        } else {
+            printBombs();
+            JOptionPane.showMessageDialog(null,
+                    "YOU LOST!");
+        }
+        this.dispose();
+        System.out.println(this);
+        Menu menu = new Menu();
+        menu.setVisible(true);
+    }
 
-        statusLabel = new JLabel("Bem-vindo ao Campo Minado!");
-        frame.add(statusLabel, BorderLayout.SOUTH);
+    public void printBombs(){
+        for(int i = 0; i < this.minesweeper.getDifficulty().getValue(); i++){
+            for(int j = 0; j < this.minesweeper.getDifficulty().getValue(); j++){
+                Cell cell = this.minesweeper.getMap().getCell(i, j);
+                if (cell.isBomb())
+                    buttons[i][j].setText("X");
+            }
+        }
+    }
 
-        frame.setVisible(true);
+    public void printButtons(){
+        for (int i = 0; i < this.minesweeper.getDifficulty().getValue(); i++){
+            for (int j = 0; j < this.minesweeper.getDifficulty().getValue(); j++){
+                Cell cell = this.minesweeper.getMap().getCell(i, j);
+                if (cell.isVisible()){
+                    buttons[i][j].setEnabled(false);
+                    if (cell.isEmptyCell())
+                        buttons[i][j].setText("0");
+                    else
+                        buttons[i][j].setText(Integer.toString(cell.getNeighboringBombsCount()));
+                }
+            }
+        }
     }
 
     private class ButtonClickListener implements ActionListener {
-        private int row;
-        private int col;
+        int row;
+        int col;
 
         public ButtonClickListener(int row, int col) {
             this.row = row;
@@ -61,12 +92,11 @@ public class GameBoard {
         @Override
         public void actionPerformed(ActionEvent e) {
             JButton button = buttons[row][col];
-            button.setText("Clicked");
-            statusLabel.setText("Clicked cell: (" + row + ", " + col + ")");
+            minesweeper.getMap().selectPosition(row, col);
+            printButtons();
+            if (minesweeper.getMap().isEndOfGame()) {
+                gameOver();
+            }
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater((Runnable) new GameBoard(Difficulty.EASY));
     }
 }
