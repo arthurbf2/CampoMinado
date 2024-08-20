@@ -1,11 +1,9 @@
 package map;
-import game.Difficulty;
-
 import java.util.List;
 import java.util.Random;
 
 public abstract class Map {
-    private Cell[][] field;
+    private final Cell[][] field;
     private final int bombs;
     private int visibleCells;
     private boolean endOfGame;
@@ -114,27 +112,6 @@ public abstract class Map {
                 }
             }
         }
-
-        /*
-        int boundary = field.length;
-        for (int i = 0; i < boundary; i++) {
-            for (int j = 0; j < boundary; j++) {
-                Cell cell = getCell(i, j);
-                if (!cell.isBomb()) {
-                    for (int k = i - 1; k <= i + 1; k++) {
-                        if (k >= 0 && k < boundary)
-                            for (int l = j - 1; l <= j + 1; l++)
-                                if (l >= 0 && l < boundary){
-                                    Cell neighbor = getCell(k, l);
-                                    if (neighbor.isBomb()){
-                                        cell.setNeighboringBombsCount(cell.getNeighboringBombsCount() + 1);
-                                    }
-                                }
-                    }
-                }
-            }
-        }
-        */
     }
 
     public void traverseNeighbors(Cell[][] field) {
@@ -166,11 +143,18 @@ public abstract class Map {
     }
 
     public boolean checkWinCondition(){
-        return (visibleCells >= (field.length * field.length) - bombs);
+        // A game is won when all non-bomb cells are opened
+        gameWon = (visibleCells >= (field.length * field.length) - bombs);
+        return gameWon;
     }
 
     public void selectPosition(int row, int column) {
+        /*
+        Takes user input to update game state.
+         */
         Cell cell = getCell(row, column);
+        if (cell.isVisible())
+                return;
         cell.setVisible(true);
         visibleCells++;
         if (cell.isBomb()) {
@@ -180,7 +164,7 @@ public abstract class Map {
         if (cell.isEmptyCell()) {
             revealBlankCells(cell);
         }
-        printGame(false);
+        //printGame(false);
         endOfGame = checkWinCondition();
     }
 }

@@ -26,8 +26,8 @@ public class Minesweeper {
                 break;
         }
         //System.out.println("Welcome");
-        gameMap.printGame(false);
-        startGame();
+        gameMap.printGame(true);
+        //startGame();
     }
 
     public void startGame() {
