@@ -2,24 +2,26 @@ package gui;
 import game.Difficulty;
 import game.Minesweeper;
 import map.Cell;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class GameBoard extends JFrame {
     private JPanel gamePanel;
     private JButton[][] buttons;
-    private JLabel statusLabel;
     protected Minesweeper minesweeper;
+    private ImageIcon bombIcon = new ImageIcon(getClass().getResource("resources/bomb.png"));
+    private ImageIcon flagIcon = new ImageIcon(getClass().getResource("resources/flag.png"));
 
     public GameBoard(Difficulty difficulty) {
         this.minesweeper = new Minesweeper(difficulty);
         setTitle("MINESWEEPER");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        setSize(500, 500);
-
+        setSize(1000, 800);
+        setLocationRelativeTo(null);
         gamePanel = new JPanel();
         int rows = difficulty.getValue();
         int columns = difficulty.getValue();
@@ -30,8 +32,12 @@ public class GameBoard extends JFrame {
             for (int j = 0; j < columns; j++) {
                 JButton button = new JButton();
                 button.setPreferredSize(new Dimension(50, 50));
-                button.setFont(new Font("Arial", Font.PLAIN, 18));
-                button.addActionListener(new ButtonClickListener(i, j));
+                button.setMargin(new Insets(0, 0, 0, 0));
+                if (minesweeper.getDifficulty().equals(Difficulty.HARD)) {
+                    button.setFont(new Font("LCDMono2", Font.BOLD, 10));
+                } else
+                    button.setFont(new Font("LCDMono2", Font.BOLD, 25));
+                button.addMouseListener(new ButtonClickListener(i, j));
                 buttons[i][j] = button;
                 gamePanel.add(button);
             }
@@ -60,7 +66,7 @@ public class GameBoard extends JFrame {
             for (int j = 0; j < this.minesweeper.getDifficulty().getValue(); j++){
                 Cell cell = this.minesweeper.getMap().getCell(i, j);
                 if (isEndOfGame && cell.isBomb()) {
-                        buttons[i][j].setText("X");
+                        buttons[i][j].setIcon(bombIcon);
                 }
                 else {
                         if (cell.isVisible()) {
@@ -75,22 +81,41 @@ public class GameBoard extends JFrame {
         }
     }
 
-    private class ButtonClickListener implements ActionListener {
+    private class ButtonClickListener extends MouseAdapter {
         int row;
-        int col;
+        int column;
 
-        public ButtonClickListener(int row, int col) {
+        public ButtonClickListener(int row, int column){
             this.row = row;
-            this.col = col;
+            this.column = column;
         }
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JButton button = buttons[row][col];
-            minesweeper.getMap().selectPosition(row, col);
-            printButtons(minesweeper.getMap().isEndOfGame());
-            if (minesweeper.getMap().isEndOfGame())
-                gameOver();
+        public void mouseClicked(MouseEvent e){
+            JButton button = buttons[row][column];
+            Cell cell = minesweeper.getMap().getCell(row, column);
+            if (e.getButton() == MouseEvent.BUTTON1 && button.isEnabled()) {
+                minesweeper.getMap().selectPosition(row, column);
+                printButtons(minesweeper.getMap().isEndOfGame());
+                if (minesweeper.getMap().isEndOfGame())
+                    gameOver();
+            }
+            if (e.getButton() == MouseEvent.BUTTON3) {
+                if (cell.isVisible())
+                    return;
+                if (cell.isFlag()) {
+                    cell.setFlag(false);
+                    button.setIcon(new ImageIcon(""));
+                    button.setEnabled(true);
+                    minesweeper.getMap().setFlagCount(minesweeper.getMap().getFlagCount() - 1);
+                }
+                else {
+                    cell.setFlag(true);
+                    button.setIcon(flagIcon);
+                    button.setEnabled(false);
+                    minesweeper.getMap().setFlagCount(minesweeper.getMap().getFlagCount() + 1);
+                }
+            }
+            System.out.println(minesweeper.getMap().getFlagCount());
         }
     }
 }
