@@ -70,6 +70,10 @@ public abstract class Map {
         this.firstPlay = firstPlay;
     }
 
+    public int getBombQuantity() {
+        return this.bombs;
+    }
+
     public Cell getCell(int row, int column) {
         return field[row][column];
     }

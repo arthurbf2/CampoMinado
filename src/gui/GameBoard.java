@@ -10,12 +10,16 @@ import java.awt.event.MouseEvent;
 
 public class GameBoard extends JFrame {
     private JPanel gamePanel;
+    private JPanel topPanel;
     private JButton[][] buttons;
     protected Minesweeper minesweeper;
     private ImageIcon bombIcon = new ImageIcon(getClass().getResource("resources/bomb.png"));
     private ImageIcon flagIcon = new ImageIcon(getClass().getResource("resources/flag.png"));
+    private JLabel flagCounter;
 
     public GameBoard(Difficulty difficulty) {
+        int rows = difficulty.getValue();
+        int columns = difficulty.getValue();
         this.minesweeper = new Minesweeper(difficulty);
         setTitle("MINESWEEPER");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -23,9 +27,10 @@ public class GameBoard extends JFrame {
         setSize(1000, 800);
         setLocationRelativeTo(null);
         gamePanel = new JPanel();
-        int rows = difficulty.getValue();
-        int columns = difficulty.getValue();
-
+        topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        flagCounter = new JLabel("FLAGS: 0");
+        topPanel.add(flagCounter);
+        add(topPanel, BorderLayout.NORTH);
         gamePanel.setLayout(new GridLayout(rows, columns));
         buttons = new JButton[rows][columns];
         for (int i = 0; i < rows; i++) {
@@ -108,12 +113,13 @@ public class GameBoard extends JFrame {
                     button.setEnabled(true);
                     minesweeper.getMap().setFlagCount(minesweeper.getMap().getFlagCount() - 1);
                 }
-                else {
+                else if (minesweeper.getMap().getFlagCount() < minesweeper.getMap().getBombQuantity()){
                     cell.setFlag(true);
                     button.setIcon(flagIcon);
                     button.setEnabled(false);
                     minesweeper.getMap().setFlagCount(minesweeper.getMap().getFlagCount() + 1);
                 }
+                flagCounter.setText("FLAGS: " + minesweeper.getMap().getFlagCount());
             }
             System.out.println(minesweeper.getMap().getFlagCount());
         }
