@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameBoard extends JFrame {
     private JPanel gamePanel;
@@ -16,6 +18,9 @@ public class GameBoard extends JFrame {
     private ImageIcon bombIcon = new ImageIcon(getClass().getResource("resources/bomb.png"));
     private ImageIcon flagIcon = new ImageIcon(getClass().getResource("resources/flag.png"));
     private JLabel flagCounter;
+    private JLabel chronometerLabel;
+    private Timer timer;
+    private int timeCounter = 0;
 
     public GameBoard(Difficulty difficulty) {
         int rows = difficulty.getValue();
@@ -29,7 +34,9 @@ public class GameBoard extends JFrame {
         gamePanel = new JPanel();
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         flagCounter = new JLabel("FLAGS: 0");
+        this.chronometer();
         topPanel.add(flagCounter);
+        topPanel.add(this.chronometerLabel);
         add(topPanel, BorderLayout.NORTH);
         gamePanel.setLayout(new GridLayout(rows, columns));
         buttons = new JButton[rows][columns];
@@ -63,6 +70,22 @@ public class GameBoard extends JFrame {
         System.out.println(this);
         Menu menu = new Menu();
         menu.setVisible(true);
+    }
+
+    public void chronometer(){
+        this.chronometerLabel = new JLabel();
+        this.timer = new Timer();
+        this.timer.scheduleAtFixedRate(new TimerTask() {
+            public void run(){
+                timeCounter++;
+                int sec = timeCounter % 60;
+                int min = timeCounter/ 60;
+                int hour = min / 60;
+                min %= 60;
+                chronometerLabel.setText(String.format("%02d:%02d:%02d", hour, min, sec));
+                topPanel.add(chronometerLabel, BorderLayout.NORTH);
+            }
+        }, 1000L,1000L);
     }
 
 
