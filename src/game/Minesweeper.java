@@ -26,7 +26,7 @@ public class Minesweeper {
                 break;
         }
         //System.out.println("Welcome");
-        gameMap.printGame(true);
+        //gameMap.printGame(true);
         //startGame();
     }
 
@@ -62,15 +62,9 @@ public class Minesweeper {
         return difficulty;
     }
 
-    public void setDifficulty(Difficulty difficulty) {
-        this.difficulty = difficulty;
-    }
 
     public Map getMap() {
         return gameMap;
     }
 
-    public void setMap(Map map) {
-        this.gameMap = map;
-    }
 }

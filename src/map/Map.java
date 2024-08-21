@@ -9,15 +9,15 @@ public abstract class Map {
     private boolean endOfGame;
     private boolean gameWon;
     private int flagCount;
-
+    private boolean firstPlay = true;
 
     public Map(int bombs, int size) {
         this.field = new Cell[size][size];
         this.bombs = bombs;
         initializeCells();
         traverseNeighbors(field);
-        distributeBombs(bombs);
-        countBombs(field);
+        //distributeBombs(bombs);
+        //countBombs(field);
     }
 
     private void initializeCells() {
@@ -28,13 +28,13 @@ public abstract class Map {
         }
     }
 
-    private void distributeBombs(int bombs) {
+    private void distributeBombs(int bombs, Cell firstCell) {
         Random random = new Random();
         for (int i = 0; i < bombs; i++) {
             int x = random.nextInt(field.length);
             int y = random.nextInt(field.length);
             Cell cell = getCell(x, y);
-            if (!cell.isBomb())
+            if (!cell.isBomb() && cell != firstCell && !firstCell.getNeighbors().contains(cell))
                 cell.setBomb(true);
             else
                 i--;
@@ -66,6 +66,10 @@ public abstract class Map {
             }
             System.out.println();
         }
+    }
+
+    public void setFirstPlay(boolean firstPlay) {
+        this.firstPlay = firstPlay;
     }
 
     public Cell getCell(int row, int column) {
@@ -143,7 +147,7 @@ public abstract class Map {
     }
 
     public boolean checkWinCondition(){
-        // A game is won when all non-bomb cells are opened
+        // A game is won when all non-bomb cells are visible
         gameWon = (visibleCells >= (field.length * field.length) - bombs);
         return gameWon;
     }
@@ -153,6 +157,13 @@ public abstract class Map {
         Takes user input to update game state.
          */
         Cell cell = getCell(row, column);
+        if (firstPlay){
+            setFirstPlay(false);
+            System.out.println("BOMBS: " + this.bombs);
+            distributeBombs(this.bombs, cell);
+            countBombs(this.field);
+            printGame(true);
+        }
         if (cell.isVisible())
                 return;
         cell.setVisible(true);
