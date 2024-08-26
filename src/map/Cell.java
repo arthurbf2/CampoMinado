@@ -9,7 +9,9 @@ public class Cell {
     private boolean visible;
     private int row;
     private int column;
-    private List<Cell> neighbors = new ArrayList<Cell>();
+    private List<Cell> neighbors = new ArrayList<>();
+    private List<Cell> flaggedNeighbors = new ArrayList<>();
+
 
     public Cell(int row, int column) {
         this.row = row;
@@ -47,22 +49,6 @@ public class Cell {
         this.visible = visible;
     }
 
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getColumn() {
-        return column;
-    }
-
-    public void setColumn(int column) {
-        this.column = column;
-    }
-
     public List<Cell> getNeighbors() {
         return neighbors;
     }
@@ -81,6 +67,18 @@ public class Cell {
             }
             i++;
         }
+    }
+
+    public List<Cell> getFlaggedNeighbors() {
+        return flaggedNeighbors;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getColumn() {
+        return column;
     }
 
     public boolean isEmptyCell() {

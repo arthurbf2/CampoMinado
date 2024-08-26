@@ -11,13 +11,13 @@ public class Menu extends JFrame {
         setTitle("MINESWEEPER");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
-        setLayout(new GridLayout(4, 1));
+        setLayout(new GridLayout(5, 1));
         setLocationRelativeTo(null);
         JButton easyButton = new JButton("EASY");
         easyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startGame(Difficulty.EASY);
+                startGame(Difficulty.EASY, false);
             }
         });
         add(easyButton);
@@ -26,7 +26,7 @@ public class Menu extends JFrame {
         mediumButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startGame(Difficulty.MEDIUM);
+                startGame(Difficulty.MEDIUM, false);
             }
         });
         add(mediumButton);
@@ -35,10 +35,19 @@ public class Menu extends JFrame {
         hardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startGame(Difficulty.HARD);
+                startGame(Difficulty.HARD, false);
             }
         });
         add(hardButton);
+
+        JButton AI_mode = new JButton("AI mode");
+        AI_mode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startGame(Difficulty.HARD, true);
+            }
+        });
+        add(AI_mode);
 
         JButton exitButton = new JButton("Exit");
         exitButton.addActionListener(new ActionListener() {
@@ -52,9 +61,9 @@ public class Menu extends JFrame {
         setVisible(true);
     }
 
-    private void startGame(Difficulty difficulty) {
+    private void startGame(Difficulty difficulty, boolean AI_mode) {
         dispose();
-        new GameBoard(difficulty);
+        new GameBoard(difficulty, AI_mode);
     }
 
     public static void main(String[] args) {

@@ -1,4 +1,5 @@
 package map;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -10,6 +11,7 @@ public abstract class Map {
     private boolean gameWon;
     private int flagCount;
     private boolean firstPlay = true;
+    private List<Cell> visibleCellList = new ArrayList<>();
 
     public Map(int bombs, int size) {
         this.field = new Cell[size][size];
@@ -88,14 +90,6 @@ public abstract class Map {
         this.flagCount = flagCount;
     }
 
-    public int getVisibleCells() {
-        return visibleCells;
-    }
-
-    public void setVisibleCells(int visibleCells) {
-        this.visibleCells = visibleCells;
-    }
-
     public boolean isGameWon() {
         return gameWon;
     }
@@ -131,6 +125,10 @@ public abstract class Map {
         }
     }
 
+    public int getVisibleCells(){
+        return visibleCells;
+    }
+
     public void revealBlankCells(Cell cell) {
         /*
         method called when an empty position is selected. Reveals all empty neighboring positions,
@@ -141,6 +139,7 @@ public abstract class Map {
             if (!neighbor.isVisible()) {
                 neighbor.setVisible(true);
                 visibleCells++;
+                visibleCellList.add(neighbor);
                 if (neighbor.isEmptyCell()) {
                     revealBlankCells(neighbor);
                 }
@@ -170,6 +169,7 @@ public abstract class Map {
                 return;
         cell.setVisible(true);
         visibleCells++;
+        visibleCellList.add(cell);
         if (cell.isBomb()) {
             endOfGame = true;
             return;
@@ -180,4 +180,9 @@ public abstract class Map {
         //printGame(false);
         endOfGame = checkWinCondition();
     }
+
+    public List<Cell> getVisibleCellList() {
+        return visibleCellList;
+    }
+
 }

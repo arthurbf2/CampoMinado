@@ -7,12 +7,10 @@ import java.util.Scanner;
 
 public class Minesweeper {
 
-    private Player player;
     private Map gameMap;
-    private Difficulty difficulty;
+    private final Difficulty difficulty;
 
     public Minesweeper(Difficulty difficulty) {
-        this.player = new Player("Player 1");
         this.difficulty = difficulty;
         switch (difficulty){
             case EASY:
@@ -47,15 +45,6 @@ public class Minesweeper {
         if (gameMap.isGameWon())
             System.out.println("YOU WON!!!!!");
         gameMap.printGame(true);
-    }
-
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     public Difficulty getDifficulty() {

@@ -1,5 +1,6 @@
 package gui;
 import game.Difficulty;
+import game.GameSolver;
 import game.Minesweeper;
 import map.Cell;
 
@@ -22,7 +23,7 @@ public class GameBoard extends JFrame {
     private Timer timer;
     private int timeCounter = 0;
 
-    public GameBoard(Difficulty difficulty) {
+    public GameBoard(Difficulty difficulty, boolean AI_mode) {
         int rows = difficulty.getValue();
         int columns = difficulty.getValue();
         this.minesweeper = new Minesweeper(difficulty);
@@ -56,6 +57,8 @@ public class GameBoard extends JFrame {
         }
         add(gamePanel, BorderLayout.CENTER);
         setVisible(true);
+        if (AI_mode)
+            new GameSolver(this.minesweeper, this);
     }
 
     public void gameOver(){
@@ -107,6 +110,14 @@ public class GameBoard extends JFrame {
                     }
             }
         }
+    }
+
+    public JButton getButton(int x, int y) {
+        return buttons[x][y];
+    }
+
+    public ImageIcon getFlagIcon() {
+        return flagIcon;
     }
 
     private class ButtonClickListener extends MouseAdapter {
