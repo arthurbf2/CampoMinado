@@ -81,6 +81,10 @@ public class Cell {
         return column;
     }
 
+    public String toString() {
+        return "(" + row + ", " + column + ")";
+    }
+
     public boolean isEmptyCell() {
         return this.neighboringBombsCount == 0;
     }

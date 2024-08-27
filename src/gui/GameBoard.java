@@ -141,7 +141,6 @@ public class GameBoard extends JFrame {
         flagCounter.setText("FLAGS: " + minesweeper.getMap().getFlagCount());
     }
 
-
     private class ButtonClickListener extends MouseAdapter {
         int row;
         int column;
