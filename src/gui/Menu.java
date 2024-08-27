@@ -44,7 +44,7 @@ public class Menu extends JFrame {
         AI_mode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startGame(Difficulty.EASY, true);
+                startGame(Difficulty.HARD, true);
             }
         });
         add(AI_mode);

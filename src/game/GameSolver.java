@@ -20,20 +20,18 @@ public class GameSolver {
         this.board = board;
         this.minesweeper = minesweeper;
         Random random = new Random();
-        int x = 8;
-        int y = 8;
-        //int x = random.nextInt(minesweeper.getDifficulty().getValue());
-        //int y = random.nextInt(minesweeper.getDifficulty().getValue());
-        minesweeper.getMap().selectPosition(x, y);
+        int x = random.nextInt(minesweeper.getDifficulty().getValue());
+        int y = random.nextInt(minesweeper.getDifficulty().getValue());
+        board.leftClick(x, y);
         board.printButtons(false);
-        timer = new Timer(100, e -> solveGame());
+        timer = new Timer(10, e -> solveGame());
         timer.start();
     }
 
     public void setFlags(Cell cell, List<Cell> invisibleNeighbors){
         if (cell.getFlaggedNeighbors().size() == cell.getNeighboringBombsCount())
             return;
-        if (invisibleNeighbors.size() == cell.getNeighboringBombsCount()) {
+        if (invisibleNeighbors.size() == cell.getNeighboringBombsCount() - cell.getFlaggedNeighbors().size()) {
             for (Cell neighbor : invisibleNeighbors) {
                 if (!neighbor.isFlag()) {
                     System.out.println("Cell: " + cell);
