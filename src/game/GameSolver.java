@@ -27,13 +27,7 @@ public class GameSolver {
             return;
         if (invisibleNeighbors.size() == cell.getNeighboringBombsCount()) {
             for (Cell neighbor : invisibleNeighbors) {
-                neighbor.setFlag(true);
-                JButton button = this.board.getButton(neighbor.getRow(), neighbor.getColumn());
-                button.setIcon(this.board.getFlagIcon());
-                neighbor.setVisible(true);
-                cell.getFlaggedNeighbors().add(neighbor);
-                this.minesweeper.getMap().setFlagCount(this.minesweeper.getMap().getFlagCount() + 1);
-                this.board.printButtons(this.minesweeper.getMap().isEndOfGame());
+                board.rightClick(neighbor.getRow(), neighbor.getColumn());
             }
         }
     }
@@ -42,8 +36,7 @@ public class GameSolver {
         if (cell.getNeighboringBombsCount() == cell.getFlaggedNeighbors().size()) {
             for (Cell neighbor : cell.getNeighbors()) {
                 if (!neighbor.isVisible() && !neighbor.isFlag()) {
-                    this.minesweeper.getMap().selectPosition(neighbor.getRow(), neighbor.getColumn());
-                    this.board.printButtons(this.minesweeper.getMap().isEndOfGame());
+                    board.leftClick(cell.getRow(), cell.getColumn());
                 }
             }
         }
@@ -63,6 +56,10 @@ public class GameSolver {
                     }
                     setFlags(cell, invisibleNeighbors);
                     selectCell(cell);
+                    if (this.minesweeper.getMap().isEndOfGame()) {
+                        System.out.println("Last cell: " + cell.getRow() + ", " + cell.getColumn() + ")");
+                        return;
+                    }
                 }
             }
         }

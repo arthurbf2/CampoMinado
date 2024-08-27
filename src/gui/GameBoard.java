@@ -70,7 +70,6 @@ public class GameBoard extends JFrame {
                     "YOU LOST!");
         }
         this.dispose();
-        System.out.println(this);
         Menu menu = new Menu();
         menu.setVisible(true);
     }
@@ -112,13 +111,36 @@ public class GameBoard extends JFrame {
         }
     }
 
-    public JButton getButton(int x, int y) {
-        return buttons[x][y];
+    public void leftClick(int row, int column) {
+        JButton button = buttons[row][column];
+        if (button.isEnabled()) {
+            minesweeper.getMap().selectPosition(row, column);
+            printButtons(minesweeper.getMap().isEndOfGame());
+            if (minesweeper.getMap().isEndOfGame())
+                gameOver();
+        }
     }
 
-    public ImageIcon getFlagIcon() {
-        return flagIcon;
+    public void rightClick(int row, int column) {
+        JButton button = buttons[row][column];
+        Cell cell = minesweeper.getMap().getCell(row, column);
+        if(cell.isVisible())
+            return;
+        if (cell.isFlag()) {
+            cell.setFlag(false);
+            button.setIcon(new ImageIcon(""));
+            button.setEnabled(true);
+            minesweeper.getMap().setFlagCount(minesweeper.getMap().getFlagCount() - 1);
+        }
+        else if (minesweeper.getMap().getFlagCount() < minesweeper.getMap().getBombQuantity()){
+            cell.setFlag(true);
+            button.setIcon(flagIcon);
+            button.setEnabled(false);
+            minesweeper.getMap().setFlagCount(minesweeper.getMap().getFlagCount() + 1);
+        }
+        flagCounter.setText("FLAGS: " + minesweeper.getMap().getFlagCount());
     }
+
 
     private class ButtonClickListener extends MouseAdapter {
         int row;
@@ -130,32 +152,11 @@ public class GameBoard extends JFrame {
         }
 
         public void mouseClicked(MouseEvent e){
-            JButton button = buttons[row][column];
-            Cell cell = minesweeper.getMap().getCell(row, column);
-            if (e.getButton() == MouseEvent.BUTTON1 && button.isEnabled()) {
-                minesweeper.getMap().selectPosition(row, column);
-                printButtons(minesweeper.getMap().isEndOfGame());
-                if (minesweeper.getMap().isEndOfGame())
-                    gameOver();
-            }
+            if (e.getButton() == MouseEvent.BUTTON1)
+                leftClick(row, column);
             if (e.getButton() == MouseEvent.BUTTON3) {
-                if (cell.isVisible())
-                    return;
-                if (cell.isFlag()) {
-                    cell.setFlag(false);
-                    button.setIcon(new ImageIcon(""));
-                    button.setEnabled(true);
-                    minesweeper.getMap().setFlagCount(minesweeper.getMap().getFlagCount() - 1);
-                }
-                else if (minesweeper.getMap().getFlagCount() < minesweeper.getMap().getBombQuantity()){
-                    cell.setFlag(true);
-                    button.setIcon(flagIcon);
-                    button.setEnabled(false);
-                    minesweeper.getMap().setFlagCount(minesweeper.getMap().getFlagCount() + 1);
-                }
-                flagCounter.setText("FLAGS: " + minesweeper.getMap().getFlagCount());
+                rightClick(row, column);
             }
-            System.out.println(minesweeper.getMap().getFlagCount());
         }
     }
 }
